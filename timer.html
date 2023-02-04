@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>timer</title>
+    <style>
+      body > div:nth-child(1) {
+        text-align: center;
+        border: 2px solid black;
+        width: 400px;
+        margin: auto;
+        padding-bottom: 10px;
+        background-color: rgb(228, 191, 191);
+      }
+      body > div:nth-child(2) {
+        border: 3px solid rgb(215, 4, 4);
+        width: 400px;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        font-size: 100px;
+      }
+      input {
+        width: 50px;
+      }
+      #inhrs, #insec, #inmin{
+        background-color: antiquewhite;
+        text-align: center;
+      }
+      #start:hover{
+        background-color: greenyellow;
+        color:white;
+      }
+      #pause:hover{
+        background-color: coral;
+        color:white;
+      }
+      #reset:hover{
+        background-color: red;
+        color:white;
+      }
+      label{
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>TIMER</h1>
+      <label>HOURS</label>
+      <input id="inhrs" type="tel" maxlength="2" />
+      <label for="">MINUTES</label>
+      <input id="inmin" type="tel" maxlength="2" />
+      <label for="">SECONDS</label>
+      <input type="tel" id="insec" maxlength="2" /><br /><br />
+
+      <input id="start" type="submit" value="Start" />
+      <input id="pause" type="submit" value="Pause" />
+      <input id="reset" type="submit" value="Reset" />
+    </div>
+    <div>
+      <div id="outhrs">00</div>
+      <span>:</span>
+      <div id="outmin">00</div>
+      <span>:</span>
+      <div id="outsec">00</div>
+    </div>
+  </body>
+</html>
+
+<script>
+  let hrs;
+  let min;
+  let sec;
+  let x;
+  //Start
+  document.querySelector("#start").addEventListener("click", function () {
+    let status = localStorage.getItem("status");
+    if (status == "yes") {
+      hrs=localStorage.getItem("hrs")
+      min=localStorage.getItem("min")
+      sec=localStorage.getItem("sec")
+    } else {
+      hrs = document.querySelector("#inhrs").value;
+      document.querySelector("#inhrs").value = "";
+      min = document.querySelector("#inmin").value;
+      document.querySelector("#inmin").value = "";
+      sec = document.querySelector("#insec").value;
+      document.querySelector("#insec").value = "";
+    }
+
+    x = setInterval(function () {
+      if (sec >= 0 && min == 0 && hrs == 0) {
+        document.getElementById("outhrs").innerText = "00";
+        document.getElementById("outmin").innerText = "00";
+        if (sec <= 9) {
+          document.getElementById("outsec").innerText = "0" + sec;
+          document.getElementById("outsec").style.color = "red";
+        } else {
+          document.getElementById("outsec").innerText = sec;
+          document.getElementById("outsec").style.color = "black";
+        }
+        sec--;
+      } else if (sec >= 0 && min >= 0 && hrs == 0) {
+        if (sec <= 9) {
+          document.getElementById("outsec").innerText = "0" + sec;
+          // document.getElementById("outsec").style.color = "red";
+        } else {
+          document.getElementById("outsec").innerText = sec;
+        }
+        if (min <= 9) {
+          document.getElementById("outmin").innerText = "0" + min;
+        } else {
+          document.getElementById("outmin").innerText = min;
+        }
+        document.getElementById("outhrs").innerText = "00";
+        if (sec == 0) {
+          --min;
+          sec = 59;
+        } else {
+          sec--;
+        }
+      } else if (sec >= 0 && min >= 0 && hrs >= 0) {
+        //hours
+        if (sec <= 9) {
+          document.getElementById("outsec").innerText = "0" + sec;
+          document.getElementById("outsec").style.color = "red";
+        } else {
+          document.getElementById("outsec").innerText = sec;
+          document.getElementById("outsec").style.color = "black";
+        }
+        if (min <= 9) {
+          document.getElementById("outmin").innerText = "0" + min;
+        } else {
+          document.getElementById("outmin").innerText = min;
+        }
+
+        if(hrs<=9){
+          document.getElementById("outhrs").innerText = "0" + hrs;
+        } else {
+          document.getElementById("outhrs").innerText = hrs;
+        }
+
+
+        if (sec == 0 && min == 0) {
+          hrs--;
+          min = 59;
+          sec = 59;
+        } else if (sec == 0) {
+          min--;
+          sec = 59;
+        } else {
+          sec--;
+        }
+      }
+    }, 1000);
+  });
+
+  document.querySelector("#pause").addEventListener("click", function () {
+    clearInterval(x);
+    localStorage.setItem("hrs", hrs);
+    localStorage.setItem("min", min);
+    localStorage.setItem("sec", sec);
+    localStorage.setItem("status", "yes");
+  });
+  document.querySelector("#reset").addEventListener("click", function () {
+    clearInterval(x);
+    document.getElementById("outmin").innerText = "00";
+    document.getElementById("outhrs").innerText = "00";
+    document.getElementById("outsec").innerText = "00";
+    localStorage.setItem("hrs", 0);
+    localStorage.setItem("min", 0);
+    localStorage.setItem("sec", 0);
+    localStorage.setItem("status", "no");
+  });
+</script>
